@@ -9,7 +9,12 @@ st.markdown("不只是生成文案，而是生成**能出单**的文案")
 # ========== 侧边栏：API Key设置 ==========
 with st.sidebar:
     st.header("⚙️ API设置")
-    api_key = st.text_input("智谱API Key", type="password", help="去 open.bigmodel.cn 免费注册")
+    # 默认API Key（你的），用户也可以选择用自己的
+DEFAULT_API_KEY = "68a3b840f392489c836839407335841a.OfYyPVKyni3xo4IZ"
+api_key = st.text_input("智谱API Key（已默认填写，直接可用）", 
+                        value=DEFAULT_API_KEY, 
+                        type="password",
+                        help="已为你预填，直接点生成即可")
     
     st.header("🎚️ 创意参数")
     temperature = st.slider("创意程度", 0.0, 1.5, 0.9, 0.1, 
