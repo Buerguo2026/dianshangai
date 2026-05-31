@@ -1,6 +1,9 @@
 import streamlit as st
 from zhipuai import ZhipuAI
 
+# ========== 你的默认API Key（用户无需填写） ==========
+DEFAULT_API_KEY = "68a3b840f392489c836839407335841a.OfYyPVKyni3xo4IZ"
+
 # ========== 页面设置 ==========
 st.set_page_config(page_title="电商文案AI", page_icon="🛍️")
 st.title("🛍️ 电商爆款文案生成器")
@@ -8,13 +11,13 @@ st.markdown("不只是生成文案，而是生成**能出单**的文案")
 
 # ========== 侧边栏：API Key设置 ==========
 with st.sidebar:
-    st.header("⚙️ API设置")
-    # 默认API Key（你的），用户也可以选择用自己的
-DEFAULT_API_KEY = "68a3b840f392489c836839407335841a.OfYyPVKyni3xo4IZ"
-api_key = st.text_input("智谱API Key（已默认填写，直接可用）", 
-                        value=DEFAULT_API_KEY, 
-                        type="password",
-                        help="已为你预填，直接点生成即可")
+    st.header("🔑 免费AI能力（已预填）")
+    api_key = st.text_input("智谱API Key", 
+                            value=DEFAULT_API_KEY,
+                            type="password",
+                            help="已为你预填，直接可用")
+    
+    st.markdown("新用户去 [open.bigmodel.cn](https://open.bigmodel.cn) 免费注册送额度")
     
     st.header("🎚️ 创意参数")
     temperature = st.slider("创意程度", 0.0, 1.5, 0.9, 0.1, 
@@ -31,9 +34,6 @@ api_key = st.text_input("智谱API Key（已默认填写，直接可用）",
     copy_mode = st.radio("生成模式",
                         ["通用版（安全不出错）", "爆款版（痛点+场景+强转化）"],
                         index=1)
-    
-    st.markdown("---")
-    st.markdown("💡 没Key？去 [智谱开放平台](https://open.bigmodel.cn/) 免费注册")
 
 # ========== 主界面 ==========
 st.subheader("📝 输入商品信息")
@@ -49,7 +49,6 @@ optional_context = st.text_input("补充信息（选填）",
 # ========== Prompt模板库 ==========
 def build_prompt(style, audience, mode, product, selling_point, context):
     
-    # 基础风格设定
     style_base = {
         "小红书种草风": "你是一个月薪3万的小红书爆款文案写手。",
         "知乎理性测评风": "你是一个有10年行业经验的消费品测评专家，知乎万粉大V。",
@@ -57,7 +56,6 @@ def build_prompt(style, audience, mode, product, selling_point, context):
         "淘宝详情页风": "你是一个服务过100+天猫店铺的资深详情页策划。"
     }
     
-    # 人群针对性设定
     audience_hook = {
         "不指定": "",
         "宝妈": "你的读者是宝妈，最在意安全性、便利性、对宝宝好不好。",
@@ -68,7 +66,6 @@ def build_prompt(style, audience, mode, product, selling_point, context):
         "送礼人群": "你的读者正在挑选礼物，最在意体面、不出错、对方会不会喜欢。"
     }
     
-    # 爆款模式铁律（核心升级点）
     hardcore_rules = {
         "通用版（安全不出错）": """
 基本要求：
@@ -85,7 +82,6 @@ def build_prompt(style, audience, mode, product, selling_point, context):
 5. 【禁止词】严禁使用"真的超实用""赶快来试试""强烈推荐"这类废话，出现一次就算不合格"""
     }
     
-    # 组装完整Prompt
     prompt = f"""
 {style_base[style]}
 {audience_hook[audience]}
@@ -129,11 +125,9 @@ if st.button("🚀 生成文案", type="primary", use_container_width=True):
                 st.markdown("### 📝 生成的文案")
                 st.markdown(result)
                 
-                # 显示当前使用的模式标签
                 if copy_mode == "爆款版（痛点+场景+强转化）":
                     st.info("💡 当前为爆款模式，文案已加入痛点场景和行动指令，更适合直接投放")
                 
-                # 下载按钮
                 st.download_button(
                     label="📥 下载文案（TXT）",
                     data=result,
@@ -147,4 +141,4 @@ if st.button("🚀 生成文案", type="primary", use_container_width=True):
 
 # ========== 页脚 ==========
 st.markdown("---")
-st.markdown("💪 下一步：爆款文案有了，要不要学怎么批量生成 + 自动发布？")
+st.markdown("💪 爆款文案有了，下一步：批量生成 + 数据分析")
